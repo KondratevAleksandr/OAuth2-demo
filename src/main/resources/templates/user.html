@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Profile</title>
+    <!-- Подключение jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="/webjars/js-cookie/js.cookie.js"></script>
+    <script type="text/javascript">
+        function logout() {
+            // Отправляем POST-запрос на выход
+            $.post('/logout', function() {
+                window.location.href = '/'; // Перенаправление на главную страницу после выхода
+            }).fail(function() {
+                alert("Ошибка при выходе. Попробуйте еще раз."); // Обработка ошибок
+            });
+        }
+    </script>
+</head>
+<body>
+<h1>User Profile</h1>
+<p>Name: <span th:text="${name}"></span></p>
+<p>Email: <span th:text="${email}"></span></p>
+<p>Login: <span th:text="${login}"></span></p>
+<p>ID: <span th:text="${id}"></span></p>
+<div class="container authenticated">
+    Выполнен вход как: <span id="user" th:text="${name}"></span>
+    <div>
+        <button onClick="logout()" class="btn btn-primary">Logout</button>
+    </div>
+</div>
+</body>
+</html>
