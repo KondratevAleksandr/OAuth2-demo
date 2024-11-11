@@ -28,7 +28,6 @@ public class SocialAppService implements OAuth2UserService<OAuth2UserRequest, OA
 
         // Логика сохранения юзера, определения роли на основе аутентификации
         String email = oAuth2User.getAttribute("email");
-        String accessToken = userRequest.getAccessToken().getTokenValue();
         String username = oAuth2User.getAttribute("name");
         String role = oAuth2User.getAttribute("role");
 
@@ -37,17 +36,17 @@ public class SocialAppService implements OAuth2UserService<OAuth2UserRequest, OA
         }
 
         String finalRole = role;
-        User user = userRepository.findByEmail(email).orElseGet(() -> {
+        userRepository.findByEmail(email).orElseGet(() -> {
             User savedUser = new User();
             savedUser.setUsername(username);
             savedUser.setEmail(email);
             savedUser.setRole(finalRole);
+
+            logger.info("Создан новый пользователь: {}", savedUser);
             return userRepository.save(savedUser);
         });
 
-        user.setAccessToken(accessToken);
-        userRepository.save(user);
-
+        logger.info("Пользователь успешно аутентифицирован: {}", username);
         return oAuth2User;
     }
 }

@@ -2,7 +2,6 @@ package com.example.OAuth2_demo.config;
 
 
 import com.example.OAuth2_demo.repository.UserRepository;
-import com.example.OAuth2_demo.service.CustomAuthenticationSuccessHandler;
 import com.example.OAuth2_demo.service.CustomLogoutSuccessHandler;
 import com.example.OAuth2_demo.service.SocialAppService;
 import lombok.AllArgsConstructor;
@@ -34,21 +33,20 @@ public class SecurityConfig {
                         .requestMatchers("/main/**").hasAnyRole("USER", "ADMIN") //и для юзеров и для администраторов
                         .anyRequest().authenticated() // Все остальные запросы требуют аутентификации
                 )
-//                .csrf(csrf -> csrf
-//                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-//                )
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)) // Обработка ошибок аутентификации
                 )
                 .oauth2Login(oauth2Login -> oauth2Login
-                        .successHandler(new CustomAuthenticationSuccessHandler())
+
                         .loginPage("/") // Указываем страницу для входа
+
                         .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint
                                 .userService(socialAppService))
                         .defaultSuccessUrl("/user")
+
                 )
                 .logout(logout -> logout
-                        .logoutSuccessHandler(new CustomLogoutSuccessHandler(userRepository))
+                        .logoutSuccessHandler(new CustomLogoutSuccessHandler())
                         .logoutUrl("/logout") // URL для выхода
                         .logoutSuccessUrl("/")
                         .invalidateHttpSession(true)
